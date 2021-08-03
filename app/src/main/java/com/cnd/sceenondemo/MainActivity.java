@@ -31,11 +31,13 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             action = intent.getAction();
             if (Intent.ACTION_SCREEN_ON.equals(action)) {
-                // 开屏
+                // 亮屏灯灭，value=0
                 Log.i(TAG,"ACTION_SCREEN_ON，light off");
+                setNodeString("/sys/devices/platform/gpio-ctl/gpio_led1/value","0");
             } else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                // 锁屏
+                // 息屏灯亮，value=1
                 Log.i(TAG,"ACTION_SCREEN_OFF,，light on");
+                setNodeString("/sys/devices/platform/gpio-ctl/gpio_led1/value","1");
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 Log.i(TAG,"ACTION_USER_PRESENT");
                 // 解锁
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      写入节点值
      **/
-    public static boolean setNodeString(String path,String value){
+    public static void setNodeString(String path,String value){
         try {
             BufferedWriter bufWriter = null;
             bufWriter = new BufferedWriter(new FileWriter(path));
@@ -56,9 +58,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(TAG,"write failed!");
-            return false;
         }
-        return true;
     }
 
     @Override
